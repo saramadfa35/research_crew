@@ -251,11 +251,12 @@ if page == "🏠 Home":
 
             try:
 
-
                 subprocess.run(
                     [
                         "crewai",
-                        "run"
+                        "run",
+                        "--inputs",
+                        json.dumps({"topic": topic})
                     ],
                     check=True
                 )
