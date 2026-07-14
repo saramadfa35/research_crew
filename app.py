@@ -2,6 +2,7 @@ import streamlit as st
 import subprocess
 import json
 import os
+import re
 from datetime import datetime
 
 
@@ -251,9 +252,22 @@ if page == "🏠 Home":
 
             try:
 
+                # اقرأ ملف crew.jsonc
+                with open("crew.jsonc", "r", encoding="utf-8") as f:
+                    crew_content = f.read()
+
+                # استبدل "inputs": {...} بالقيمة الجديدة (topic)
+                new_inputs_line = f'"inputs": {json.dumps({"topic": topic}, ensure_ascii=False)}'
+                crew_content = re.sub(r'"inputs":\s*\{[^}]*\}', new_inputs_line, crew_content)
+
+                # اكتب الملف تاني بعد التعديل
+                with open("crew.jsonc", "w", encoding="utf-8") as f:
+                    f.write(crew_content)
+
+                # شغّل الكرو عادي من غير --inputs
                 subprocess.run(
-                ["crewai", "run", "--inputs", json.dumps({"topic": topic})],
-                check=True
+                    ["crewai", "run"],
+                    check=True
                 )
 
 
